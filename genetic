@@ -1,0 +1,57 @@
+import random
+
+# 🧠 Target word we're trying to evolve
+TARGET = "hello"
+POP_SIZE = 10
+MUTATION_RATE = 0.1
+GENES = "abcdefghijklmnopqrstuvwxyz "
+
+# 💥 Create a random string
+def random_individual():
+    return ''.join(random.choice(GENES) for _ in range(len(TARGET)))
+
+# 🎯 Fitness: how close the string is to the TARGET
+def fitness(individual):
+    return sum(1 for i, j in zip(individual, TARGET) if i == j)
+
+# 🧬 Selection: Pick best 2 from population
+def selection(population):
+    return sorted(population, key=fitness, reverse=True)[:2]
+
+# 💘 Crossover: Mix two parents to create a child
+def crossover(p1, p2):
+    idx = random.randint(0, len(TARGET) - 1)
+    return p1[:idx] + p2[idx:]
+
+# ⚡ Mutation: Randomly change one letter
+def mutate(individual):
+    individual = list(individual)
+    for i in range(len(individual)):
+        if random.random() < MUTATION_RATE:
+            individual[i] = random.choice(GENES)
+    return ''.join(individual)
+
+# 🚀 Main loop
+def genetic_algorithm():
+    population = [random_individual() for _ in range(POP_SIZE)]
+    generation = 0
+
+    while True:
+        generation += 1
+        best = max(population, key=fitness)
+        print(f"Gen {generation}: {best} (fitness: {fitness(best)})")
+
+        if best == TARGET:
+            print("🎉 Target matched!")
+            break
+
+        parents = selection(population)
+        population = []
+
+        while len(population) < POP_SIZE:
+            child = crossover(random.choice(parents), random.choice(parents))
+            child = mutate(child)
+            population.append(child)
+
+if __name__ == "__main__":
+    genetic_algorithm()
