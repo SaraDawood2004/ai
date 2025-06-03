@@ -1,0 +1,29 @@
+import math
+import random
+
+# 🎯 Function to minimize
+def f(x):
+    return x ** 2
+
+# 🔥 Simulated Annealing
+def simulated_annealing():
+    temp = 1000      # Start temp (hot 🔥)
+    cooling = 0.95   # Cooling rate
+    x = random.uniform(-10, 10)  # Start at random point
+
+    while temp > 0.1:
+        new_x = x + random.uniform(-1, 1)  # Try a nearby value
+        delta = f(new_x) - f(x)            # Change in cost
+
+        # 🔄 Accept new solution if it's better or with a small chance if worse
+        if delta < 0 or random.random() < math.exp(-delta / temp):
+            x = new_x
+
+        temp *= cooling  # ❄️ Cool down
+
+    return x, f(x)
+
+# 🚀 Run it
+best_x, best_val = simulated_annealing()
+print(f"Best x: {best_x:.4f}")
+print(f"Best value: {best_val:.4f}")
